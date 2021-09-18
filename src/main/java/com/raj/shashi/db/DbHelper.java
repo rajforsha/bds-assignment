@@ -3,7 +3,6 @@ package com.raj.shashi.db;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.raj.shashi.domain.Record;
 import org.bson.Document;
 
