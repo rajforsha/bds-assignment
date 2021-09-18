@@ -15,7 +15,7 @@ public class InputReader {
         try{
             ObjectMapper objectMapper = new ObjectMapper();
 
-            InputStream inputStream = Record.class.getResourceAsStream("/res.json");
+            InputStream inputStream = this.getClass().getResourceAsStream("/res.json");
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             CollectionType collectionType = typeFactory.constructCollectionType(
                     List.class, Record.class);
