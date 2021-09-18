@@ -1,10 +1,13 @@
 package com.raj.shashi.db;
 
+import com.google.gson.Gson;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.raj.shashi.domain.Record;
 import org.bson.Document;
+
+import java.util.List;
 
 public class DbHelper {
 
@@ -12,14 +15,16 @@ public class DbHelper {
 
     public DbHelper (){
         this.mongoClient = DbConnector.connect();
-        System.out.println(mongoClient.getClusterDescription()+"\n"+mongoClient.listDatabaseNames());
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("mydb");
-        //mongoDatabase.createCollection("record");
-        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("record");
-
     }
 
-    public void insert(){
+    public void save(List<Record> recordList){
+
+        Gson gson = new Gson();
+        MongoCollection<Document> collection = this.mongoClient.getDatabase("mydb").getCollection("record");
+        recordList.stream().forEach(record->{
+            Document document = Document.parse(gson.toJson(record));
+            collection.insertOne(document);
+        });
 
     }
 
