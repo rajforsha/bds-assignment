@@ -1,16 +1,11 @@
 package com.raj.shashi.query;
 
-import com.mongodb.DBObject;
 import com.mongodb.client.*;
 import com.raj.shashi.db.DbConnector;
-import com.raj.shashi.db.DbHelper;
-import org.bson.BsonDocument;
-import org.bson.BsonString;
-import org.bson.BsonValue;
 import org.bson.Document;
+import static com.mongodb.client.model.Filters.*;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class QueryExecutor {
 
@@ -33,31 +28,54 @@ public class QueryExecutor {
         }
 
         System.out.println(this.mongoCollection.countDocuments());
+        //        System.out.println(this.mongoCollection.find().first().toJson());
     }
 
 
     public void queryBasedOnCuisineAndZipcode(String cuisine, String zipcode){
 
-        BsonDocument bsonDocument = new BsonDocument();
-        bsonDocument.append("typeOfFood", new BsonString(cuisine))
-                .append("zipcode", new BsonString(zipcode));
-
-        MongoCursor<Document> result = this.mongoCollection.find(bsonDocument)
+        MongoCursor<Document> result = this.mongoCollection.find(and(eq("typeOfFood", cuisine), eq("zipcode", zipcode)))
+                .batchSize(5)
+//                .sort(new BsonDocument().)
                 .iterator();
-//                .sort(new BsonDocument().append("rating", new Bso));
 
         while(result.hasNext()){
             System.out.println(result.next().toJson());
         }
+    }
 
-        System.out.println(this.mongoCollection.find().first().toJson());
+    public void queryBasedOnAddressAndMinimumRating(String address, String rating){
+
+        MongoCursor<Document> result = this.mongoCollection.find(and(eq("address", address), gte("rating", rating)))
+//                .projection(BsonArray.parse("{""}"))
+                .iterator();
+
+        while(result.hasNext()){
+            System.out.println(result.next().toJson());
+        }
+    }
+
+    public void groupZipcodeByCuisine(String cuisine){
+
+        MongoCursor<Document> result = this.mongoCollection.find(eq("typeOfFood", cuisine))
+//                .projection(BsonArray.parse("{""}"))
+                .iterator();
+
+        while(result.hasNext()){
+            System.out.println(result.next().toJson());
+        }
+    }
+
+    public void averageRatingPerFood(){
 
     }
 
     public static void main(String [] args){
 
         QueryExecutor queryExecutor = new QueryExecutor();
-        queryExecutor.queryBasedOnCuisineAndZipcode("Curry", "PA237HG");
+        queryExecutor.queryBasedOnCuisineAndZipcode("Chinese", "NE163DS");
+        queryExecutor.queryBasedOnAddressAndMinimumRating("Unit 4 Spencer House", "1");
+        queryExecutor.groupZipcodeByCuisine("Chinese");
     }
 
 }
