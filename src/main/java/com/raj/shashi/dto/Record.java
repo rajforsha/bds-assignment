@@ -1,4 +1,4 @@
-package con.raj.shashi.dto;
+package com.raj.shashi.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
