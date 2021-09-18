@@ -31,18 +31,19 @@ public class MainApplication {
             switch(input){
 
                 case 1:
-                    System.out.println("please enter cuisine and zipcode");
+                    System.out.println("please enter cuisine");
                     String cuisine = scanner.next();
+                    System.out.println("please enter zipcode");
                     String zipcode = scanner.next();
 
                     mainApplication.queryExecutor.queryBasedOnCuisineAndZipcode(cuisine, zipcode);
                     break;
 
                 case 2:
-                    System.out.println("please enter address and rating");
+                    System.out.println("please enter address");
                     String address = scanner.next();
+                    System.out.println("please enter rating");
                     String rating = scanner.next();
-
                     mainApplication.queryExecutor.queryBasedOnAddressAndMinimumRating(address, rating);
                     break;
 
