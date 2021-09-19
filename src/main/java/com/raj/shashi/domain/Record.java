@@ -19,10 +19,19 @@ public class Record {
     private String name;
     private String outcode;
     private String postcode;
-    private String rating;
+    private Double rating;
     @JsonProperty("type_of_food")
     private String typeOfFood;
     private String zipcode;
+
+    public void setRating(String rating) {
+        if(rating.equalsIgnoreCase("Not yet rated")){
+            this.rating = 0.0;
+        }
+        else{
+            this.rating = Double.parseDouble(rating);
+        }
+    }
 
     public void setOutcode(String outcode) {
         this.outcode = outcode;
