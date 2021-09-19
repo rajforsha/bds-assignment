@@ -2,6 +2,7 @@ package com.raj.shashi.query;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Projections;
 import com.raj.shashi.db.DbConnector;
 import org.bson.Document;
@@ -65,7 +66,7 @@ public class QueryExecutor {
 
     public void groupZipcodeByCuisine(String cuisine){
 
-        Bson group = group("$zipcode", sum("count", "$typeOfFood"));
+        Bson group = group("$zipcode", Accumulators.sum("count", 1));
         Bson match = match(eq("typeOfFood", cuisine));
         Bson sort = sort(new BasicDBObject("count", -1));
 
