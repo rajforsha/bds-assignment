@@ -1,6 +1,6 @@
 # bds-assignment
 
-##data-injestor
+## data-injestor
 DataWriter is the class which inserts data to the mongodb.
 
 ## query interface

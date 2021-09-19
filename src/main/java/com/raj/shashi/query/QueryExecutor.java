@@ -1,10 +1,19 @@
 package com.raj.shashi.query;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Projections;
 import com.raj.shashi.db.DbConnector;
+import org.bson.BsonDocument;
 import org.bson.Document;
-import static com.mongodb.client.model.Filters.*;
+import org.bson.conversions.Bson;
 
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Accumulators.*;
+import static com.mongodb.client.model.Aggregates.*;
+
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class QueryExecutor {
@@ -28,15 +37,15 @@ public class QueryExecutor {
         }
 
         System.out.println(this.mongoCollection.countDocuments());
-        //        System.out.println(this.mongoCollection.find().first().toJson());
     }
 
 
     public void queryBasedOnCuisineAndZipcode(String cuisine, String zipcode){
 
         MongoCursor<Document> result = this.mongoCollection.find(and(eq("typeOfFood", cuisine), eq("zipcode", zipcode)))
-                .batchSize(5)
-//                .sort(new BsonDocument().)
+                .projection(Projections.fields(Projections.include("name", "address", "rating"), Projections.excludeId()))
+                .sort(new BasicDBObject("rating", -1))
+                .limit(5)
                 .iterator();
 
         while(result.hasNext()){
@@ -47,7 +56,8 @@ public class QueryExecutor {
     public void queryBasedOnAddressAndMinimumRating(String address, String rating){
 
         MongoCursor<Document> result = this.mongoCollection.find(and(eq("address", address), gte("rating", rating)))
-//                .projection(BsonArray.parse("{""}"))
+                .projection(Projections.fields(Projections.excludeId(), Projections.include("name", "typeOfFood", "score")))
+                .sort(new BasicDBObject("score", -1))
                 .iterator();
 
         while(result.hasNext()){
@@ -57,8 +67,11 @@ public class QueryExecutor {
 
     public void groupZipcodeByCuisine(String cuisine){
 
-        MongoCursor<Document> result = this.mongoCollection.find(eq("typeOfFood", cuisine))
-//                .projection(BsonArray.parse("{""}"))
+        Bson group = group("$zipcode", sum("count", "$typeOfFood"));
+        Bson match = match(eq("typeOfFood", cuisine));
+        Bson sort = sort(new BasicDBObject("count", -1));
+
+        MongoCursor<Document> result = this.mongoCollection.aggregate(Arrays.asList(match, group, sort))
                 .iterator();
 
         while(result.hasNext()){
@@ -68,14 +81,25 @@ public class QueryExecutor {
 
     public void averageRatingPerFood(){
 
+        Bson group = group("$typeOfFood", avg("rating", "$rating"));
+        Bson sort = sort(new BasicDBObject("rating", 1));
+        MongoCursor<Document> result = this.mongoCollection.aggregate(Arrays.asList(group, sort))
+                .iterator();
+
+        while(result.hasNext()){
+            System.out.println(result.next().toJson());
+        }
+
+
     }
 
     public static void main(String [] args){
 
         QueryExecutor queryExecutor = new QueryExecutor();
-        queryExecutor.queryBasedOnCuisineAndZipcode("Chinese", "NE163DS");
+        queryExecutor.queryBasedOnCuisineAndZipcode("African", "1HRE11");
         queryExecutor.queryBasedOnAddressAndMinimumRating("Unit 4 Spencer House", "1");
         queryExecutor.groupZipcodeByCuisine("Chinese");
+        queryExecutor.averageRatingPerFood();
     }
 
 }
