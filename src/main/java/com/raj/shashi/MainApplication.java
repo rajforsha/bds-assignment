@@ -2,6 +2,9 @@ package com.raj.shashi;
 
 import com.raj.shashi.query.QueryExecutor;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class MainApplication {
@@ -14,54 +17,62 @@ public class MainApplication {
 
     public static void main(String[] args){
 
-        MainApplication mainApplication = new MainApplication();
+        try{
 
-        Scanner scanner = new Scanner(System.in);
+            MainApplication mainApplication = new MainApplication();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        while(true){
+            while(true){
 
-            System.out.println("Hello!!" +"\n"+ "Press 1 to query queryBasedOnCuisineAndZipcode"+
-                    "\n Press 2 to query queryBasedOnAddressAndMinimumRating"+
-                    "\n Press 3 to query groupZipcodeByCuisine"+
-                    "\n Press 4 to get averageRatingPerFood"+
-                    "\n Press any key to exit");
+                System.out.println("Hello!!" +"\n"+ "Press 1 to query queryBasedOnCuisineAndZipcode"+
+                        "\n Press 2 to query queryBasedOnAddressAndMinimumRating"+
+                        "\n Press 3 to query groupZipcodeByCuisine"+
+                        "\n Press 4 to get averageRatingPerFood"+
+                        "\n Press any key to exit");
 
-            int input = scanner.nextInt();
+                int input = Integer.parseInt(reader.readLine());
 
-            switch(input){
+                switch(input){
 
-                case 1:
-                    System.out.println("please enter cuisine");
-                    String cuisine = scanner.next();
-                    System.out.println("please enter zipcode");
-                    String zipcode = scanner.next();
+                    case 1:
+                        System.out.println("please enter cuisine");
+                        String cuisine = reader.readLine();
+                        System.out.println("please enter zipcode");
+                        String zipcode = reader.readLine();
 
-                    mainApplication.queryExecutor.queryBasedOnCuisineAndZipcode(cuisine, zipcode);
-                    break;
+                        mainApplication.queryExecutor.queryBasedOnCuisineAndZipcode(cuisine, zipcode);
+                        break;
 
-                case 2:
-                    System.out.println("please enter address");
-                    String address = scanner.next();
-                    System.out.println("please enter rating");
-                    String rating = scanner.next();
-                    mainApplication.queryExecutor.queryBasedOnAddressAndMinimumRating(address, rating);
-                    break;
+                    case 2:
+                        System.out.println("please enter address");
+                        String address = reader.readLine();
+                        System.out.println("please enter rating");
+                        String rating = reader.readLine();
+                        mainApplication.queryExecutor.queryBasedOnAddressAndMinimumRating(address, rating);
+                        break;
 
-                case 3:
+                    case 3:
 
-                    System.out.println("please enter cuisine");
-                    String cuisine1 = scanner.next();
-                    mainApplication.queryExecutor.groupZipcodeByCuisine(cuisine1);
-                    break;
+                        System.out.println("please enter cuisine");
+                        String cuisine1 = reader.readLine();
+                        mainApplication.queryExecutor.groupZipcodeByCuisine(cuisine1);
+                        break;
 
-                case 4:
-                    mainApplication.queryExecutor.averageRatingPerFood();
-                    break;
+                    case 4:
+                        mainApplication.queryExecutor.averageRatingPerFood();
+                        break;
 
-                default:
-                    System.exit(0);
+                    default:
+                        System.exit(0);
+                }
+
             }
 
         }
+        catch(IOException e){
+
+            System.out.println(e.getMessage());
+        }
+
     }
 }

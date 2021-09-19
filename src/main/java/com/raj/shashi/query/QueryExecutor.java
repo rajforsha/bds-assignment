@@ -1,11 +1,9 @@
 package com.raj.shashi.query;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Projections;
 import com.raj.shashi.db.DbConnector;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
